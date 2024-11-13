@@ -4,20 +4,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 30px;
 }
 
 
 .start-button {
   font-size: 1.5em;
   padding: 10px 20px;
-  margin: 20px 0;
+  margin: 5px 0;
   background-color: #004165;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-family: 'Exo';
+  font-weight: bold;
 }
 
 .start-button:hover {
@@ -31,6 +33,7 @@
   color: #004165;
   font-weight: bold;
   text-transform: uppercase;
+  font-family: 'Fascinate';
 }
 
 .status-bar {
@@ -46,25 +49,27 @@
   align-items: center;
   padding: 10px 20px;
   border-radius: 5px;
+  font-family: 'Exo';
+  font-weight: bold;
 }
 
 .timer {
   background-color: #CADFEB;
   border: 3px solid #196088;
-  color: #333;
+  color: #196088;
 }
 
 .score {
   background-color: #FDE7B3;
   border: 3px solid #B27922;
 
-  color: #333;
+  color: #B27922;
 }
 
 .hits {
   background-color: #DCC4B8;
   border: 3px solid   #634D2B;
-  color: #333;
+  color: #634D2B;
 }
 
 .board {

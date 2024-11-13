@@ -32,7 +32,7 @@ function App() {
 function StartButton() {
   return (
     <button className="start-button">
-      Start Game
+      start game
     </button>
   );
 }
