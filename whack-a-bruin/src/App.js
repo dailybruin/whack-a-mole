@@ -1,138 +1,41 @@
-import './App.css';
-import React, { useRef, useEffect, useState, forwardRef } from 'react';
+import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { gsap } from 'gsap';
+import './App.css';
 
-const sampleData = {
-  timeLeft: "00:17",
-  score: 531,
-  hits: 7,
-  holes: [
-    { id: 1, hasBruin: false, hasBomb: false },
-    { id: 2, hasBruin: false, hasBomb: true },
-    { id: 3, hasBruin: false, hasBomb: false },
-    { id: 4, hasBruin: true, hasBomb: false },
-    { id: 5, hasBruin: true, hasBomb: false },
-    { id: 6, hasBruin: false, hasBomb: false },
-    { id: 7, hasBruin: true, hasBomb: false },
-    { id: 8, hasBruin: true, hasBomb: false },
-    { id: 9, hasBruin: false, hasBomb: true }
-  ]
+// Constants
+const TOTAL_HOLES = 9;
+const TIME_LIMIT = 40; // 20 seconds
+const BRUIN_POINTS = 1;
+const BOMB_PENALTY = 1;
+const APPEARANCE_INTERVAL = 1000; // Interval in milliseconds for new appearances
+const NUM_BRUINS = 3;
+const NUM_BOMBS = 4;
+
+// Helper Functions
+const getRandomTime = (min, max) => Math.round(Math.random() * (max - min) + min);
+
+const initializeHoles = () => {
+  return Array.from({ length: TOTAL_HOLES }, (_, id) => ({
+    id: id + 1,
+    hasBruin: false,
+    hasBomb: false,
+  }));
 };
 
-function App() {
-  const [score, setScore] =useState(0);
-  const [hits, setHits] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(20); 
-  const [gameActive, setGameActive] = useState(false);
-  const [holes, setHoles] = useState(sampleData.holes);
-
-  const handleBruinClick = () => {
-    console.log("bruin hit!")
-    setScore((prevScore) => prevScore + 1);
-    setHits((prevHits) => prevHits + 1);
-  };
-
-  const handleBombClick = (holeId) => {
-    console.log("bomb hit!");
-    setScore((prevScore) => prevScore - 1);
-  };
-
-  useEffect(() => {
-    let timerId;
-  
-    if (gameActive && timeLeft > 0) {
-      timerId = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1);
-      }, 1000); // 1 second interval
-    }
-  
-    if (timeLeft === 0 && gameActive) {
-      setGameActive(false); 
-      console.log("game ends");
-    }
-  
-    // cleanup interval when component unmounts or when gameActive/timeLeft changes
-    return () => clearInterval(timerId);
-  }, [gameActive, timeLeft]);
-  
-  const startGame = () => {
-    // reset score, hits, timer
-    setScore(0); 
-    setHits(0);  
-    setTimeLeft(20); 
-    setGameActive(true); 
-    console.log("game started!");
-  };
-
-  // TODO: change this implementation
-  // randomize bruins and bombs
-  const randomizeHoles = () => {
-  const numBruins = 2; 
-  const numBombs = 1;  
-
-  const holeIds = holes.map((hole) => hole.id);
-  const shuffledHoleIds = shuffleArray(holeIds);
-
-  // get random hole IDs for bruins and bombs
-  const selectedBruinIds = shuffledHoleIds.slice(0, numBruins);
-  const selectedBombIds = shuffledHoleIds.slice(numBruins, numBruins + numBombs);
-
-  // update holes state
-  setHoles((prevHoles) =>
-    prevHoles.map((hole) => {
-      if (selectedBruinIds.includes(hole.id)) {
-        return { ...hole, hasBruin: true, hasBomb: false };
-      } else if (selectedBombIds.includes(hole.id)) {
-        return { ...hole, hasBruin: false, hasBomb: true };
-      } else {
-        return { ...hole, hasBruin: false, hasBomb: false };
-      }
-    })
-  );
-};
-
-const shuffleArray = (array) => {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-};
-useEffect(() => {
-  let randomizeInterval;
-
-  if (gameActive) {
-    // randomize bruins and bombs every 1 second
-    randomizeInterval = setInterval(() => {
-      randomizeHoles();
-    }, 1000);
-  }
-
-  return () => clearInterval(randomizeInterval);
-}, [gameActive]);
-  return (
-    <div className="game-page">
-      <Header />
-      <StartButton onStart={startGame} disabled={gameActive} />
-      <StatusBar timeLeft={timeLeft} score={score} hits={hits} />
-      <Board holes={holes} onBruinClick={handleBruinClick} onBombClick={handleBombClick} />
-    </div>
-  );
-}
-
-function StartButton({ onStart, disabled }) {
-  return (
-    <button className="start-button" onClick={onStart} disabled={disabled}>
-      Start Game
-    </button>
-  );
-}
+// Modular Components
 function Header() {
   return (
     <header className="header">
       <h1>Whack-a-Bruin</h1>
     </header>
+  );
+}
+
+function StartButton({ playing, onStart, onEnd }) {
+  return (
+    <button className="start-button" onClick={playing ? onEnd : onStart}>
+      {playing ? 'End Game' : 'Start Game'}
+    </button>
   );
 }
 
@@ -147,116 +50,242 @@ function StatusBar({ timeLeft, score, hits }) {
 }
 
 function Timer({ timeLeft }) {
-  // format: MM:SS
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    const paddedMinutes = String(minutes).padStart(2, '0');
-    const paddedSeconds = String(remainingSeconds).padStart(2, '0');
-    return `${paddedMinutes}:${paddedSeconds}`;
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
   };
-
-  return (
-    <div className="timer">
-      <span>⏱ {formatTime(timeLeft)}</span>
-    </div>
-  );
+  return <div className="timer">⏱ {formatTime(timeLeft)}</div>;
 }
 
 function Score({ score }) {
-  return (
-    <div className="score">
-      <span>⭐ {score}</span>
-    </div>
-  );
+  return <div className="score">⭐ {score}</div>;
 }
 
 function Hits({ hits }) {
-  return (
-    <div className="hits">
-      <span>💥 {hits}</span>
-    </div>
-  );
+  return <div className="hits">💥 {hits}</div>;
 }
-
-function Board({ holes, onBruinClick, onBombClick}) {
+function Board({ totalHoles, playing, onBruinClick, onBombClick }) {
   return (
     <div className="board">
-      {holes.map((hole) => (
-        // create grid of holes
-        <Hole key={hole.id} hasBruin={hole.hasBruin} hasBomb={hole.hasBomb} onBruinClick={onBruinClick}  onBombClick={onBombClick} />
+      {Array.from({ length: totalHoles }).map((_, id) => (
+        <Hole
+          key={id}
+          holeId={id}
+          playing={playing}
+          onBruinClick={onBruinClick}
+          onBombClick={onBombClick}
+        />
       ))}
     </div>
   );
 }
 
-function Hole({ hasBruin, hasBomb, onBruinClick, onBombClick }) {
-  const bruinRef = useRef(); // references Bruin DOM element
-  const bombRef = useRef(); // references Bomb DOM element
+
+// === trying to bring back down animation === //
+function Hole({ holeId, playing, onBruinClick, onBombClick }) {
+  const [hasBruin, setHasBruin] = useState(false);
+  const [hasBomb, setHasBomb] = useState(false);
+  const [isOccupied, setIsOccupied] = useState(false); // Track if the hole is in use
+  const bruinRef = useRef(null);
+  const bombRef = useRef(null);
 
   useEffect(() => {
+    let bruinTimer, bombTimer;
+
+    if (playing) {
+      const startBruinCycle = () => {
+        if (!isOccupied) {
+          setHasBruin(true);
+          setIsOccupied(true); // Mark the hole as occupied
+        }
+        bruinTimer = setTimeout(startBruinCycle, getRandomTime(2000, 4000)); // Random interval
+      };
+
+      const startBombCycle = () => {
+        if (!isOccupied) {
+          setHasBomb(true);
+          setIsOccupied(true); // Mark the hole as occupied
+        }
+        bombTimer = setTimeout(startBombCycle, getRandomTime(2000, 4000)); // Random interval
+      };
+
+      // Start cycles after initial delays
+      bruinTimer = setTimeout(startBruinCycle, getRandomTime(500, 2000));
+      bombTimer = setTimeout(startBombCycle, getRandomTime(1000, 3000));
+    }
+
+    return () => {
+      clearTimeout(bruinTimer);
+      clearTimeout(bombTimer);
+    };
+  }, [playing, isOccupied]);
+
+  // Trigger animations for bears
+  useEffect(() => {
     if (hasBruin) {
-      // animate bruin
       gsap.fromTo(
         bruinRef.current,
-        { y: "100%", opacity: 0 }, // move out of visible area of the hole, below visible area?
+        { yPercent: 100 },
         {
-          y: "0%", // fully visible position
-          opacity: 1,
-          duration: 0.5,
-          yoyo: true, // slide back down
-          repeat: -1, // infinite loop
-          ease: "power1.inOut",
+          yPercent: 0,
+          duration: 0.8,
+          yoyo: true,
+          repeat: 1,
+          onComplete: () => {
+            setHasBruin(false);
+            setIsOccupied(false); // Free the hole after animation
+          },
         }
       );
     }
+  }, [hasBruin]);
+
+  // Trigger animations for bombs
+  useEffect(() => {
     if (hasBomb) {
-      // animate bee
       gsap.fromTo(
         bombRef.current,
-        { y: "100%", opacity: 0 },
+        { yPercent: 100 },
         {
-          y: "0%",
-          opacity: 1,
-          duration: 0.5,
+          yPercent: 0,
+          duration: 0.8,
           yoyo: true,
-          repeat: -1,
-          ease: "power1.inOut",
+          repeat: 1,
+          onComplete: () => {
+            setHasBomb(false);
+            setIsOccupied(false); // Free the hole after animation
+          },
         }
       );
     }
-  }, [hasBruin, hasBomb]); // trigger when hasBruin or hasBomb changes 
+  }, [hasBomb]);
+
+  const handleClick = (type) => {
+    if (type === "bruin") {
+      // Trigger exit animation for bear
+      gsap.to(bruinRef.current, {
+        yPercent: 100,
+        duration: 0.5,
+        onComplete: () => {
+          onBruinClick(holeId);
+          setHasBruin(false);
+          setIsOccupied(false); // Free the hole on click
+        },
+      });
+    } else if (type === "bomb") {
+      // Trigger exit animation for bomb
+      gsap.to(bombRef.current, {
+        yPercent: 100,
+        duration: 0.5,
+        onComplete: () => {
+          onBombClick(holeId);
+          setHasBomb(false);
+          setIsOccupied(false); // Free the hole on click
+        },
+      });
+    }
+  };
 
   return (
     <div className="hole">
-      {hasBruin && <Bruin onClick={onBruinClick} ref={bruinRef} />}
-      {hasBomb && <Bomb onClick={onBombClick} ref={bombRef} />}
+      {hasBruin && (
+        <Bruin ref={bruinRef} onClick={() => handleClick("bruin")} />
+      )}
+      {hasBomb && (
+        <Bomb ref={bombRef} onClick={() => handleClick("bomb")} />
+      )}
     </div>
   );
 }
 
-const Bruin = forwardRef(({ onClick }, ref) => {
-  useEffect(() => {
-    console.log("bruin component mounted");
-  }, []);
+
+const Bruin = forwardRef(({ onClick }, ref) => (
+  <div className="bruin" ref={ref} onClick={onClick}>
+    <img src="/bruin.png" alt="Bruin" />
+  </div>
+));
+
+const Bomb = forwardRef(({ onClick }, ref) => (
+  <div className="bomb" ref={ref} onClick={onClick}>
+    <img src="/bee.jpg" alt="Bomb" />
+  </div>
+));
+
+function Game() {
+  const [score, setScore] = useState(0);
+  const [hits, setHits] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(TIME_LIMIT);
+  const [playing, setPlaying] = useState(false);
+  const [finished, setFinished] = useState(false);
+
+  const startGame = () => {
+    setScore(0);
+    setHits(0);
+    setTimeLeft(TIME_LIMIT);
+    setPlaying(true);
+    setFinished(false);
+  };
+
+  const endGame = () => {
+    setPlaying(false);
+    setFinished(true);
+  };
+
+  const handleBruinClick = (id) => {
+    if (playing) {
+      setScore((prev) => prev + BRUIN_POINTS);
+    }
+  };
+
+  const handleBombClick = (id) => {
+    if (playing) {
+      setScore((prev) => prev - BOMB_PENALTY);
+      setHits((prev) => prev + 1);
+    }
+  };
+
+    // Countdown Timer Logic
+    useEffect(() => {
+      let timer;
+      if (playing && timeLeft > 0) {
+        timer = setInterval(() => {
+          setTimeLeft((prev) => prev - 1);
+        }, 1000);
+      } else if (timeLeft === 0) {
+        endGame(); // End the game when the timer hits zero
+      }
+      return () => clearInterval(timer); // Clean up the timer
+    }, [playing, timeLeft]);
 
   return (
-    <div className="bruin" ref={ref} onClick={onClick}>
-      <img src="/bruin.png" alt="Bruin" />
-    </div>
+    <>
+      <Header />
+      <StartButton playing={playing} onStart={startGame} onEnd={endGame} />
+      <StatusBar timeLeft={timeLeft} score={score} hits={hits} />
+       <Board
+        totalHoles={TOTAL_HOLES}
+        playing={playing}
+        // maxActiveHoles={maxActiveHoles}
+        // activeHoles={activeHoles}
+        // incrementActiveHoles={incrementActiveHoles}
+        // decrementActiveHoles={decrementActiveHoles}
+        onBruinClick={handleBruinClick}
+        onBombClick={handleBombClick}
+      />
+      {finished && (
+        <div className="game-over">
+          <p>Game Over! Final Score: {score}</p>
+          <button onClick={startGame}>Play Again</button>
+        </div>
+      )}
+    </>
   );
-});
+}
 
-const Bomb = forwardRef(({ onClick }, ref) => {
-  useEffect(() => {
-    console.log("bee component mounted");
-  }, []);
 
-  return (
-    <div className="bomb" ref={ref} onClick={onClick}>
-      <img src="/bee.jpg" alt="Bee" />
-    </div>
-  );
-});
+// Export the App Component
+export default function App() {
+  return <Game />;
+}
 
-export default App;
