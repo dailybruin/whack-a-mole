@@ -5,22 +5,22 @@ import './App.css';
 // Constants
 const TOTAL_HOLES = 9;
 const TIME_LIMIT = 40; // 20 seconds
-const BRUIN_POINTS = 1;
-const BOMB_PENALTY = 1;
-const APPEARANCE_INTERVAL = 1000; // Interval in milliseconds for new appearances
-const NUM_BRUINS = 3;
-const NUM_BOMBS = 4;
+const BRUIN_POINTS = 50;
+const BOMB_PENALTY = 25;
+// const APPEARANCE_INTERVAL = 1000; // Interval in milliseconds for new appearances
+// const NUM_BRUINS = 3;
+// const NUM_BOMBS = 4;
 
 // Helper Functions
 const getRandomTime = (min, max) => Math.round(Math.random() * (max - min) + min);
 
-const initializeHoles = () => {
-  return Array.from({ length: TOTAL_HOLES }, (_, id) => ({
-    id: id + 1,
-    hasBruin: false,
-    hasBomb: false,
-  }));
-};
+// const initializeHoles = () => {
+//   return Array.from({ length: TOTAL_HOLES }, (_, id) => ({
+//     id: id + 1,
+//     hasBruin: false,
+//     hasBomb: false,
+//   }));
+// };
 
 // Modular Components
 function Header() {
@@ -218,6 +218,7 @@ function Game() {
   const [timeLeft, setTimeLeft] = useState(TIME_LIMIT);
   const [playing, setPlaying] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [bees, setBees] = useState(0);
 
   const startGame = () => {
     setScore(0);
@@ -235,13 +236,14 @@ function Game() {
   const handleBruinClick = (id) => {
     if (playing) {
       setScore((prev) => prev + BRUIN_POINTS);
+      setHits((prev) => prev + 1);
     }
   };
 
   const handleBombClick = (id) => {
     if (playing) {
       setScore((prev) => prev - BOMB_PENALTY);
-      setHits((prev) => prev + 1);
+      setBees((prev) => prev + 1);
     }
   };
 
@@ -275,8 +277,12 @@ function Game() {
       />
       {finished && (
         <div className="game-over">
-          <p>Game Over! Final Score: {score}</p>
-          <button onClick={startGame}>Play Again</button>
+          <p className="end-text">TIME OVER!</p> 
+          <p className="end-text">score: {score}</p>
+          <p className="end-text">bruins whacked: {hits}</p>
+          <p className="end-text">escaped: 0</p>
+          <p className="end-text">bees: {bees}</p>
+          {/* <button onClick={startGame}>Play Again</button> */}
         </div>
       )}
     </>

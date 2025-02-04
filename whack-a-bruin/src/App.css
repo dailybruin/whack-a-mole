@@ -126,3 +126,18 @@
 .bomb {
   bottom: 0;
 }
+
+.game-over {
+  font-size: 2em;
+  margin: 20px 0;
+  color: #004165;
+  font-weight: bold;
+  font-family: 'Exo';
+  display: grid;
+  justify-content: center;
+}
+
+.end-text {
+  padding: 0px;
+  margin: 2px;
+}
