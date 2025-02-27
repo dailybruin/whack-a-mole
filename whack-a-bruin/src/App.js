@@ -260,33 +260,34 @@ function Game() {
       return () => clearInterval(timer); // Clean up the timer
     }, [playing, timeLeft]);
 
-  return (
-    <>
-      <Header />
-      <StartButton playing={playing} onStart={startGame} onEnd={endGame} />
-      <StatusBar timeLeft={timeLeft} score={score} hits={hits} />
-       <Board
-        totalHoles={TOTAL_HOLES}
-        playing={playing}
-        // maxActiveHoles={maxActiveHoles}
-        // activeHoles={activeHoles}
-        // incrementActiveHoles={incrementActiveHoles}
-        // decrementActiveHoles={decrementActiveHoles}
-        onBruinClick={handleBruinClick}
-        onBombClick={handleBombClick}
-      />
-      {finished && (
-        <div className="game-over">
-          <p className="end-text">TIME OVER!</p> 
-          <p className="end-text">score: {score}</p>
-          <p className="end-text">bruins whacked: {hits}</p>
-          <p className="end-text">escaped: 0</p>
-          <p className="end-text">bees: {bees}</p>
-          {/* <button onClick={startGame}>Play Again</button> */}
-        </div>
-      )}
-    </>
-  );
+    return (
+      <div className="game-page">
+        <Header />
+        <StartButton playing={playing} onStart={startGame} onEnd={endGame} />
+        <StatusBar timeLeft={timeLeft} score={score} hits={hits} />
+        <Board
+          totalHoles={TOTAL_HOLES}
+          playing={playing}
+          onBruinClick={handleBruinClick}
+          onBombClick={handleBombClick}
+        />
+    
+        {/* End Game Pop-up Overlay */}
+        {finished && (
+          <div className="overlay">
+            <div className="popup">
+              <p className="end-text">TIME OVER!</p>
+              <p className="end-text">Score: {score}</p>
+              <p className="end-text">Bruins Whacked: {hits}</p>
+              <p className="end-text">Escaped: 0</p>
+              <p className="end-text">Bees: {bees}</p>
+              <button className="popup-btn" onClick={startGame}>Play Again</button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+    
 }
 
 

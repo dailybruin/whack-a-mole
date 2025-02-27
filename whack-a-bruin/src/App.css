@@ -13,7 +13,7 @@
   font-size: 1.5em;
   padding: 10px 20px;
   margin: 0px auto;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   background-color: #004165;
   color: white;
   border: none;
@@ -49,7 +49,6 @@
   justify-content: center;
   gap: 20px;
   margin: 0px 0;
-  margin-bottom: 40px;
 }
 
 .timer, .score, .hits {
@@ -89,7 +88,7 @@
   border: 10px solid #004165;
   border-radius: 10px;
   justify-content: center;
-  margin: auto;
+  margin: 40px;
   box-sizing: border-box;
   max-width: 500px;
 }
@@ -127,7 +126,7 @@
   bottom: 0;
 }
 
-.game-over {
+/* .game-over {
   font-size: 2em;
   margin: 20px 0;
   color: #004165;
@@ -135,7 +134,62 @@
   font-family: 'Exo';
   display: grid;
   justify-content: center;
+  position: relative;
+  z-index: 2;
+} */
+
+/* Full-screen overlay */
+.overlay {
+  position: fixed; /*Ensures it stays on top*/
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200; /* Ensures it appears above everything */
 }
+
+/* Pop-up box */
+.popup {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0px 5px 105x rgba(0, 0, 0, 0.3);
+  width: 350px;
+  font-family: 'Exo', sans-serif;
+}
+
+/* End-game text styling */
+.end-text {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px 0;
+  font-family: 'Exo';
+  color: #004165;
+}
+
+/* Play Again button */
+.popup-btn {
+  background: #004165;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+  font-family: 'Exo', sans-serif;
+}
+
+.popup-btn:hover {
+  background: #B27922;
+}
+
 
 .end-text {
   padding: 0px;
