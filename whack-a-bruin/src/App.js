@@ -34,7 +34,7 @@ function Header() {
 function StartButton({ playing, onStart, onEnd }) {
   return (
     <button className="start-button" onClick={playing ? onEnd : onStart}>
-      {playing ? 'End Game' : 'Start Game'}
+      {playing ? 'end game' : 'start game'}
     </button>
   );
 }
@@ -55,7 +55,12 @@ function Timer({ timeLeft }) {
     const remainingSeconds = seconds % 60;
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
   };
-  return <div className="timer">⏱ {formatTime(timeLeft)}</div>;
+  return (
+    <div className="timer">
+      <img src="/timer-icon.png" alt="Timer Icon" className="timer-icon" />
+      <span className="timer-text">{formatTime(timeLeft)}</span>
+    </div>
+  );
 }
 
 function Score({ score }) {
@@ -276,12 +281,23 @@ function Game() {
         {finished && (
           <div className="overlay">
             <div className="popup">
-              <p className="end-text">TIME OVER!</p>
-              <p className="end-text">Score: {score}</p>
-              <p className="end-text">Bruins Whacked: {hits}</p>
-              <p className="end-text">Escaped: 0</p>
-              <p className="end-text">Bees: {bees}</p>
-              <button className="popup-btn" onClick={startGame}>Play Again</button>
+              <p className="time-over">TIME OVER</p>
+              {/* Grid for aligning stats */}
+              <div className="stats-container">
+              <p className="stat-label">score:</p>
+              <p className="stat-value">{score}</p>
+
+              <p className="stat-label">whacked:</p>
+              <p className="stat-value">{hits}</p>
+
+              <p className="stat-label">escaped:</p>
+              <p className="stat-value">0</p>
+
+              <p className="stat-label">bees:</p>
+              <p className="stat-value">{bees}</p>
+
+              </div>
+              <button className="popup-btn" onClick={startGame}>play again</button>
             </div>
           </div>
         )}
