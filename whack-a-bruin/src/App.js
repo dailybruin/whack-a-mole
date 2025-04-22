@@ -64,11 +64,21 @@ function Timer({ timeLeft }) {
 }
 
 function Score({ score }) {
-  return <div className="score">⭐ {score}</div>;
+  return ( 
+    <div className="score">
+      <img src="/score-icon.png" alt="Score Icon" className="score-icon" />
+      <span className="score-text">{score}</span>
+    </div>
+  );
 }
 
 function Hits({ hits }) {
-  return <div className="hits">💥 {hits}</div>;
+  return (
+    <div className="hits">
+      <img src="/hit-icon.png" alt="Hit Icon" className="hit-icon" />
+      <span className="hit-text">{hits}</span>
+    </div>
+  );
 }
 function Board({ totalHoles, playing, onBruinClick, onBombClick }) {
   return (

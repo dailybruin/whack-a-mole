@@ -72,13 +72,13 @@ h1 {
   padding-left: 0px;
 }
 
-.timer-icon {
+.timer-icon, .score-icon, .hit-icon {
   width: 60px;
   height: 44px;
   margin-left: -3px;
 }
 
-.timer-text {
+.timer-text, .score-text, .hit-text {
   text-align: left;
   flex-grow: 1;
 }
