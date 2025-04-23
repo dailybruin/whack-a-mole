@@ -7,9 +7,6 @@ const TOTAL_HOLES = 9;
 const TIME_LIMIT = 40; // 20 seconds
 const BRUIN_POINTS = 50;
 const BOMB_PENALTY = 25;
-// const APPEARANCE_INTERVAL = 1000; // Interval in milliseconds for new appearances
-// const NUM_BRUINS = 3;
-// const NUM_BOMBS = 4;
 const TIME_LOWER_BOUND_BRUIN = 200
 const TIME_UPPER_BOUND_BRUIN = 400
 const TIME_LOWER_BOUND_BOMB = 400
@@ -19,14 +16,6 @@ const MAX_BOMBS = 1;
 
 // Helper Functions
 const getRandomTime = (min, max) => Math.round(Math.random() * (max - min) + min);
-
-// const initializeHoles = () => {
-//   return Array.from({ length: TOTAL_HOLES }, (_, id) => ({
-//     id: id + 1,
-//     hasBruin: false,
-//     hasBomb: false,
-//   }));
-// };
 
 // Modular Components
 function Header() {
@@ -89,7 +78,12 @@ function Hits({ hits }) {
 }
 
 function Escapes({ escapes }) {
-  return <div className="escapes">🏃 {escapes}</div>;
+  return (
+    <div className="escapes">
+      <img src="/escapes-icon.png" alt="Escape Icon" className="escapes-icon" />
+      <span className="escapes-text">{escapes}</span>
+    </div>
+  );
 }
 
 function Board({
@@ -269,13 +263,13 @@ return (
 
 const Bruin = forwardRef(({ onClick }, ref) => (
   <div className="bruin" ref={ref} onClick={onClick}>
-    <img src="/bruin.png" alt="Bruin" />
+    <img src="/bruin-icon.png" alt="Bruin" />
   </div>
 ));
 
 const Bomb = forwardRef(({ onClick }, ref) => (
   <div className="bomb" ref={ref} onClick={onClick}>
-    <img src="/bee.jpg" alt="Bomb" />
+    <img src="/bee-icon.png" alt="Bomb" />
   </div>
 ));
 

@@ -72,13 +72,13 @@ h1 {
   padding-left: 0px;
 }
 
-.timer-icon, .score-icon, .hit-icon {
+.timer-icon, .score-icon, .hit-icon, .escapes-icon {
   width: 60px;
   height: 44px;
   margin-left: -3px;
 }
 
-.timer-text, .score-text, .hit-text {
+.timer-text, .score-text, .hit-text, .escapes-text {
   text-align: left;
   flex-grow: 1;
 }
@@ -103,9 +103,9 @@ h1 {
 }
 
 .escapes {
-  background-color: #DCC4B8;
-  border: 3px solid   #634D2B;
-  color: #634D2B;
+  background-color: #989898;
+  border: 3px solid   #535353;
+  color: #535353;
 }
 
 .board {
@@ -137,8 +137,8 @@ h1 {
 
 
 .bruin, .bomb {
-  width: 60px;
-  height: 60px;
+  width: 95px;
+  height: 95px;
   position: absolute;
 }
 
