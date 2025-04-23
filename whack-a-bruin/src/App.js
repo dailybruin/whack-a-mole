@@ -4,9 +4,9 @@ import './App.css';
 
 // Constants
 const TOTAL_HOLES = 9;
-const TIME_LIMIT = 40; // 20 seconds
-const BRUIN_POINTS = 50;
-const BOMB_PENALTY = 25;
+const TIME_LIMIT = 30; // 20 seconds
+const BRUIN_POINTS = 25;
+const BOMB_PENALTY = 15;
 const TIME_LOWER_BOUND_BRUIN = 200
 const TIME_UPPER_BOUND_BRUIN = 400
 const TIME_LOWER_BOUND_BOMB = 400
@@ -134,7 +134,10 @@ function Hole({
   setActiveBombs,
   maxBruins,
   maxBombs
+  
 }) {
+  const [bruinWhacked, setBruinWhacked] = useState(false);
+  const [bombWhacked, setBombWhacked] = useState(false);
   const [hasBruin, setHasBruin] = useState(false);
   const [hasBomb, setHasBomb] = useState(false);
   const [isOccupied, setIsOccupied] = useState(false); // Track if the hole is in use
@@ -182,7 +185,7 @@ function Hole({
         { yPercent: 100 },
         {
           yPercent: 0,
-          duration: 0.6,
+          duration: 0.8,
           yoyo: true,
           repeat: 1,
           onComplete: () => {
@@ -206,7 +209,7 @@ function Hole({
         { yPercent: 100 },
         {
           yPercent: 0,
-          duration: 0.6,
+          duration: 0.8,
           yoyo: true,
           repeat: 1,
           onComplete: () => {
@@ -222,29 +225,33 @@ function Hole({
 const handleClick = (type) => {
   if (type === "bruin") {
     gsap.killTweensOf(bruinRef.current);
+    setBruinWhacked(true);
     onBruinClick(holeId);
     setBruinClicked(true);
 
     // Trigger exit animation for bear
     gsap.to(bruinRef.current, {
       yPercent: 100,
-      duration: 0.5,
+      duration: 0.65,
       onComplete: () => {
         setHasBruin(false);
         setIsOccupied(false); // Free the hole on click
         setActiveBruins(prev => Math.max(prev - 1, 0));
+        setBruinWhacked(false); // Reset for next appearance
       },
     });
   } else if (type === "bomb") {
+    setBombWhacked(true);
     // Trigger exit animation for bomb
     gsap.to(bombRef.current, {
       yPercent: 100,
-      duration: 0.5,
+      duration: 0.65,
       onComplete: () => {
         onBombClick(holeId);
         setHasBomb(false);
         setIsOccupied(false); // Free the hole on click
         setActiveBombs(prev => Math.max(prev - 1, 0));
+        setBombWhacked(false); // Reset for next appearance
       },
     });
   }
@@ -252,24 +259,24 @@ const handleClick = (type) => {
 return (
   <div className="hole">
     {hasBruin && (
-      <Bruin ref={bruinRef} onClick={() => handleClick("bruin")} />
+      <Bruin ref={bruinRef} onClick={() => handleClick("bruin")} whacked={bruinWhacked} />
     )}
     {hasBomb && (
-      <Bomb ref={bombRef} onClick={() => handleClick("bomb")} />
+      <Bomb ref={bombRef} onClick={() => handleClick("bomb")} whacked={bombWhacked} />
     )}
   </div>
 );
 }
 
-const Bruin = forwardRef(({ onClick }, ref) => (
+const Bruin = forwardRef(({ onClick, whacked }, ref) => (
   <div className="bruin" ref={ref} onClick={onClick}>
-    <img src="/bruin-icon.png" alt="Bruin" />
+    <img src={whacked? "/bruin-whacked-icon.png" : "/bruin-icon.png"} alt="Bruin" />
   </div>
 ));
 
-const Bomb = forwardRef(({ onClick }, ref) => (
+const Bomb = forwardRef(({ onClick, whacked }, ref) => (
   <div className="bomb" ref={ref} onClick={onClick}>
-    <img src="/bee-icon.png" alt="Bomb" />
+    <img src={whacked? "/bee-whacked-icon.png" : "/bee-icon.png"} alt="Bomb" />
   </div>
 ));
 
