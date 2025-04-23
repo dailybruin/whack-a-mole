@@ -55,7 +55,7 @@ h1 {
   margin: 0px 0;
 }
 
-.timer, .score, .hits {
+.timer, .score, .hits, .escapes {
   font-size: 1.2em;
   display: flex;
   align-items: center;
@@ -97,6 +97,12 @@ h1 {
 }
 
 .hits {
+  background-color: #DCC4B8;
+  border: 3px solid   #634D2B;
+  color: #634D2B;
+}
+
+.escapes {
   background-color: #DCC4B8;
   border: 3px solid   #634D2B;
   color: #634D2B;
