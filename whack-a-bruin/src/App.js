@@ -241,13 +241,13 @@ const handleClick = (type) => {
       },
     });
   } else if (type === "bomb") {
+    onBombClick(holeId);
     setBombWhacked(true);
     // Trigger exit animation for bomb
     gsap.to(bombRef.current, {
       yPercent: 100,
       duration: 0.65,
       onComplete: () => {
-        onBombClick(holeId);
         setHasBomb(false);
         setIsOccupied(false); // Free the hole on click
         setActiveBombs(prev => Math.max(prev - 1, 0));
