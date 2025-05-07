@@ -237,3 +237,43 @@ h1 {
   padding: 0px;
   margin: 2px;
 }
+
+/* Container for game and leaderboard side by side */
+.app-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 20px;
+}
+
+/* Styling for leaderboard panel */
+.leaderboard-container {
+  width: 200px;
+  font-family: 'Exo', sans-serif;
+  border: 3px solid #004165;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #F9F9F9;
+}
+
+.leaderboard-container h2 {
+  margin-top: 0;
+  color: #004165;
+  text-align: center;
+}
+
+.leaderboard-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.leaderboard-container li {
+  padding: 5px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.leaderboard-container li:last-child {
+  border-bottom: none;
+}
