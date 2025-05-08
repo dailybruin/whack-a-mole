@@ -1,3 +1,8 @@
+body {
+  margin: 0;
+  background-color: #FFFFFF;
+}
+
 .game-page {
   display: flex;
   flex-direction: column;
@@ -112,14 +117,15 @@ h1 {
   display: grid;
   grid-template-columns: repeat(3, 100px);
   gap: 20px;
-  padding: 4% 60px;
-  padding-bottom: 70px;
+  padding: 4% 70px;
+  padding-bottom: 90px;
   border: 10px solid #004165;
   border-radius: 15px;
   justify-content: center;
   margin: 25px;
   box-sizing: border-box;
   max-width: 600px;
+  max-height: 500px;
 }
 
 .hole {
