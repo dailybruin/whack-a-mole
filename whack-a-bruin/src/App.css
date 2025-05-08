@@ -249,12 +249,14 @@ h1 {
 
 /* Styling for leaderboard panel */
 .leaderboard-container {
-  width: 200px;
+  width: 480px; /* Match game board width */
+  height: 380px; /* Approximate height of the game board */
   font-family: 'Exo', sans-serif;
   border: 3px solid #004165;
   border-radius: 5px;
   padding: 10px;
   background-color: #F9F9F9;
+  box-sizing: border-box; /* Ensure padding and border are included in height */
 }
 
 .leaderboard-container h2 {
@@ -267,11 +269,14 @@ h1 {
   list-style: none;
   padding: 0;
   margin: 0;
+  max-height: 320px; /* Calculated: 380px (container) - 20px (padding) - 40px (approx h2) */
+  overflow-y: auto; /* Make the list scrollable */
 }
 
 .leaderboard-container li {
   padding: 5px 0;
   border-bottom: 1px solid #ccc;
+  text-align: center; /* Center the text */
 }
 
 .leaderboard-container li:last-child {

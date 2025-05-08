@@ -303,6 +303,7 @@ function Game({ saveScore }) {
     setBees(0);
     setActiveBruins(0);
     setActiveBombs(0);
+    setNameSaved(false);
   };
 
   const endGame = () => {
