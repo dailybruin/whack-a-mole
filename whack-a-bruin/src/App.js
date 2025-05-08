@@ -4,7 +4,7 @@ import './App.css';
 
 // Constants
 const TOTAL_HOLES = 9;
-const TIME_LIMIT = 569; // 20 seconds
+const TIME_LIMIT = 30; // 20 seconds
 const BRUIN_POINTS = 25;
 const BOMB_PENALTY = 15;
 const TIME_LOWER_BOUND_BRUIN = 200
@@ -63,7 +63,7 @@ function Score({ score }) {
   return ( 
     <div className="score">
       <img src="/score-icon.png" alt="Score Icon" className="score-icon" />
-      <span className="score-text">{1919}</span>
+      <span className="score-text">{score}</span>
     </div>
   );
 }
