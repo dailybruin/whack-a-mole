@@ -175,7 +175,7 @@ function Hole({
       clearTimeout(bruinTimer);
       clearTimeout(bombTimer);
     };
-  }, [playing, isOccupied, activeBruins, activeBombs, maxBruins, maxBombs, setActiveBruins, setActiveBombs]);
+  }, [playing, isOccupied, activeBruins, activeBombs]);
 
   // Trigger animations for bears
   useEffect(() => {
@@ -199,7 +199,7 @@ function Hole({
         }
       );
     }
-  }, [hasBruin, bruinClicked, onBruinEscape, setActiveBruins]);
+  }, [hasBruin]);
 
   // Trigger animations for bombs
   useEffect(() => {
@@ -220,7 +220,7 @@ function Hole({
         }
       );
     }
-  }, [hasBomb, setActiveBombs]);
+  }, [hasBomb]);
 
 const handleClick = (type) => {
   if (type === "bruin") {
@@ -280,7 +280,7 @@ const Bomb = forwardRef(({ onClick, whacked }, ref) => (
   </div>
 ));
 
-function Game() {
+function Game({ saveScore }) {
   const [score, setScore] = useState(0);
   const [hits, setHits] = useState(0);
   const [timeLeft, setTimeLeft] = useState(TIME_LIMIT);
@@ -290,6 +290,8 @@ function Game() {
   const [activeBruins, setActiveBruins] = useState(0);
   const [activeBombs, setActiveBombs] = useState(0);
   const [escapes, setEscapes] = useState(0);
+  const [playerName, setPlayerName] = useState('');
+  const [nameSaved, setNameSaved] = useState(false);
 
   const startGame = () => {
     setScore(0);
@@ -301,6 +303,7 @@ function Game() {
     setBees(0);
     setActiveBruins(0);
     setActiveBombs(0);
+    setNameSaved(false);
   };
 
   const endGame = () => {
@@ -378,6 +381,25 @@ function Game() {
               <p className="stat-value">{bees}</p>
 
               </div>
+              {!nameSaved && (
+                <>
+                  <p>Would you like to record your score for the leaderboard?</p>
+                  <input
+                    type="text"
+                    value={playerName}
+                    onChange={e => setPlayerName(e.target.value)}
+                    placeholder="Enter name"
+                  />
+                  <button
+                    className="popup-btn"
+                    onClick={() => { saveScore(playerName, score); setNameSaved(true); }}
+                    disabled={!playerName}
+                  >
+                    Submit Score
+                  </button>
+                </>
+              )}
+              {nameSaved && <p>Score recorded!</p>}
               <button className="popup-btn" onClick={startGame}>play again</button>
             </div>
           </div>
@@ -387,6 +409,55 @@ function Game() {
     
 }
 
+function Leaderboard({ entries }) {
+  return (
+    <div className="leaderboard-container">
+      <h2>Leaderboard</h2>
+      <ul>
+        {entries.map((entry, idx) => (
+          <li key={idx}>{entry.name}: {entry.score}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function App() {
-  return <Game />;
+  const [leaderboard, setLeaderboard] = useState([]);
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const storedDate = sessionStorage.getItem('leaderboardDate');
+    if (storedDate !== today) {
+      sessionStorage.setItem('leaderboardDate', today);
+      sessionStorage.setItem('leaderboardList', JSON.stringify([]));
+      setLeaderboard([]);
+    } else {
+      const list = JSON.parse(sessionStorage.getItem('leaderboardList') || '[]');
+      setLeaderboard(list);
+    }
+  }, []);
+  const saveScore = (name, score) => {
+    const entry = { name, score };
+    let newList = [...leaderboard];
+    const playerIndex = newList.findIndex(item => item.name.toLowerCase() === name.toLowerCase());
+
+    if (playerIndex > -1) { // Player exists
+      if (score > newList[playerIndex].score) {
+        newList[playerIndex].score = score; // Update score if higher
+      }
+    } else { // New player
+      newList.push(entry);
+    }
+    // Sort by score descending
+    newList.sort((a, b) => b.score - a.score);
+
+    sessionStorage.setItem('leaderboardList', JSON.stringify(newList));
+    setLeaderboard(newList);
+  };
+  return (
+    <div className="app-container">
+      <Game saveScore={saveScore} />
+      <Leaderboard entries={leaderboard} />
+    </div>
+  );
 }
