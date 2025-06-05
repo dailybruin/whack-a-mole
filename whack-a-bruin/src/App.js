@@ -175,7 +175,7 @@ function Hole({
       clearTimeout(bruinTimer);
       clearTimeout(bombTimer);
     };
-  }, [playing, isOccupied, activeBruins, activeBombs]);
+  }, [playing, isOccupied, activeBruins, activeBombs, maxBruins, maxBombs, setActiveBruins, setActiveBombs]);
 
   // Trigger animations for bears
   useEffect(() => {
@@ -199,7 +199,7 @@ function Hole({
         }
       );
     }
-  }, [hasBruin]);
+  }, [hasBruin, bruinClicked, onBruinEscape, setActiveBruins]);
 
   // Trigger animations for bombs
   useEffect(() => {
@@ -220,7 +220,7 @@ function Hole({
         }
       );
     }
-  }, [hasBomb]);
+  }, [hasBomb, setActiveBombs]);
 
 const handleClick = (type) => {
   if (type === "bruin") {
